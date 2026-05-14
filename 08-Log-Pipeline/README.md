@@ -236,6 +236,39 @@ The pipeline is designed to provide visibility into:
 
 ---
 
+## Current Pipeline Status
+
+| Component | Status |
+|-----------|--------|
+| Sysmon → Splunk | ✅ Operational |
+| Sysmon → Wazuh | ✅ Operational |
+| Suricata → Splunk | ✅ Operational |
+| Suricata → Wazuh | ✅ Operational |
+| FortiGate → Splunk | ✅ Operational |
+| FortiGate → Wazuh | ✅ Operational |
+| AWS HUB → Splunk | ✅ Operational |
+| Active Directory Logs | ✅ Operational |
+| Detection Correlation | ✅ Active |
+
+## Skills Demonstrated
+
+- SIEM Engineering
+- Detection Engineering
+- Telemetry Correlation
+- Log Pipeline Design
+- IDS Monitoring
+- Firewall Telemetry
+- Endpoint Visibility
+- Security Monitoring
+- Threat Detection
+- SOC Operations
+- Windows Telemetry Analysis
+- Cloud Security Visibility
+
 ## Pipeline Summary
 
-The SOC Homelab Enterprise log pipeline combines endpoint telemetry, IDS monitoring, firewall visibility, cloud telemetry, and SIEM correlation to simulate real-world SOC monitoring workflows.
+The SOC Homelab Enterprise log pipeline combines endpoint telemetry, IDS monitoring, firewall visibility, cloud telemetry, and SIEM correlation to simulate enterprise-style SOC monitoring workflows.
+
+The architecture enables realistic detection engineering, telemetry validation, attack visibility, and incident monitoring across network, endpoint, authentication, and cloud-connected systems.
+
+This pipeline continues to evolve as additional detections, telemetry sources, dashboards, and investigation workflows are added throughout the lab lifecycle.
