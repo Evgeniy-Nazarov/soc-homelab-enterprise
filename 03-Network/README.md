@@ -1,60 +1,57 @@
-# Network
+# Network Architecture
 
-This section documents the enterprise-style segmented network architecture of the SOC Homelab Enterprise environment.
+This section documents the network segmentation, VLAN design, firewall architecture, switching model, IDS visibility, and traffic monitoring implemented within the SOC Homelab Enterprise environment.
 
-The network is designed around VLAN segmentation, centralized routing through FortiGate, passive IDS monitoring, and controlled visibility between environments.
+The objective was to simulate a realistic enterprise-style segmented security architecture with centralized visibility, secure routing, and IDS monitoring.
 
 ---
 
 ## Network Design Goals
 
-- Build enterprise-style network segmentation
-- Isolate production-style environments
-- Simulate real SOC visibility
-- Centralize routing and policy enforcement
-- Support attack simulation safely
-- Enable secure remote access
+The environment was designed to support:
+
+- Enterprise network segmentation
+- Secure routing
+- DMZ isolation
+- IDS visibility
+- Traffic monitoring
+- Attack simulation
+- Secure management access
+- Zero Trust principles
+- Enterprise SOC workflows
 
 ---
 
-## Network Architecture Overview
+## VLAN Architecture
 
-The environment is segmented into dedicated VLANs to separate security infrastructure, endpoints, servers, management systems, vulnerable services, home devices, and guest access.
-
-All inter-VLAN routing is centralized through the FortiGate 60F firewall.
-
-Network visibility is achieved through SPAN (port mirroring) to a physical Suricata IDS sensor.
-
----
-
-## VLAN Segmentation
+The network is segmented into multiple security zones.
 
 | VLAN | Network | Subnet | Purpose |
-|------|---------|---------|----------|
-| VLAN 10 | SOC_NET | 192.168.10.0/24 | SOC infrastructure and SIEM systems |
-| VLAN 20 | USER_NET | 192.168.20.0/24 | User workstation and attack simulation |
-| VLAN 30 | SERVER_NET | 192.168.30.0/24 | Active Directory and server infrastructure |
-| VLAN 40 | MGMT_NET | 192.168.40.0/24 | Administrative management network |
-| VLAN 50 | DMZ_NET | 192.168.50.0/24 | Vulnerable web applications |
-| VLAN 60 | HOME_NET | 192.168.60.0/24 | Home and media devices |
-| VLAN 70 | GUEST_NET | 192.168.70.0/24 | Isolated guest Wi-Fi |
+|------|----------|---------|----------|
+| VLAN 10 | SOC_NET | 192.168.10.0/24 | SIEM and security tooling |
+| VLAN 20 | USER_NET | 192.168.20.0/24 | User and attack simulation systems |
+| VLAN 30 | SERVER_NET | 192.168.30.0/24 | Server infrastructure |
+| VLAN 40 | MGMT_NET | 192.168.40.0/24 | Administrative management |
+| VLAN 50 | DMZ_NET | 192.168.50.0/24 | Public-facing vulnerable applications |
+| VLAN 60 | HOME_NET | Internal home network |
+| VLAN 70 | GUEST_NET | Guest / isolated Wi-Fi |
 
 ---
 
-## Network Devices
+## Core Network Components
 
 ### FortiGate 60F
 
-Primary security gateway responsible for:
+Primary enterprise firewall responsible for:
 
 - Inter-VLAN routing
-- Firewall policy enforcement
+- Security policy enforcement
+- Firewall visibility
 - VPN connectivity
-- Internet access control
-- AWS tunnel connectivity
 - Network segmentation
+- Administrative access
 
-Management IP:
+Primary management interface:
 
 ```text
 192.168.40.1
@@ -64,39 +61,41 @@ Management IP:
 
 ### FortiSwitch 124E
 
-Managed Layer 2 switch responsible for:
+Managed switch responsible for:
 
 - VLAN switching
-- 802.1Q trunking
-- SPAN / port mirroring
-- Segmented access ports
-
-Switch management is integrated into the segmented SOC architecture.
+- Port segmentation
+- SPAN mirroring
+- IDS visibility
+- Trunking
 
 ---
 
-## SPAN / IDS Monitoring Design
+## SPAN / Port Mirroring Architecture
 
-Traffic visibility is provided through passive monitoring.
+Traffic visibility is achieved using SPAN mirroring.
 
-### SPAN Configuration
+Mirror design:
 
-| Port | Purpose |
-|------|----------|
-| Port 1 | FortiGate trunk |
-| Port 7 | Hyper-V trunk |
-| Port 8 | Suricata SPAN destination |
+```text
+FortiGate Trunk (Port 1)
+            +
+Hyper-V Trunk (Port 7)
+            ↓
+SPAN Mirror
+            ↓
+Port 8
+            ↓
+Suricata IDS Sensor
+```
 
-Suricata receives mirrored traffic from:
+This configuration provides:
 
-- Inter-VLAN traffic
-- User activity
-- Server traffic
-- DMZ activity
-- Security telemetry
-- Attack simulations
-
-This design allows full network visibility without placing Suricata inline.
+- East-west visibility
+- North-south visibility
+- Inter-VLAN monitoring
+- DMZ traffic monitoring
+- Attack telemetry
 
 ---
 
@@ -104,137 +103,141 @@ This design allows full network visibility without placing Suricata inline.
 
 ### SOC_NET (VLAN 10)
 
-Contains:
-
-- WAZUH-01
-- SPLUNK-01
-
 Purpose:
 
-- SIEM monitoring
-- Detection engineering
-- Alert visibility
+- SIEM infrastructure
+- Security tooling
+- Monitoring systems
+
+Systems:
+
+| Host | IP |
+|------|----|
+| WAZUH-01 | 192.168.10.10 |
+| SPLUNK-01 | 192.168.10.20 |
 
 ---
 
 ### USER_NET (VLAN 20)
 
-Contains:
-
-- WIN11-USER-01
-- KALI-01
-
 Purpose:
 
-- User simulation
-- Attack generation
-- Endpoint telemetry
+- User systems
+- Attack simulation
+
+Systems:
+
+| Host | IP |
+|------|----|
+| WIN11-USER-01 | 192.168.20.10 |
+| KALI-01 | 192.168.20.20 |
 
 ---
 
 ### SERVER_NET (VLAN 30)
 
-Contains:
-
-- DC01
-- DB01
-
 Purpose:
 
 - Identity services
-- DNS
-- Database infrastructure
+- Server workloads
+
+Systems:
+
+| Host | IP |
+|------|----|
+| DC01 | 192.168.30.10 |
+| DB01 | 192.168.30.20 |
 
 ---
 
 ### MGMT_NET (VLAN 40)
 
-Contains:
-
-- Mac Studio
-
 Purpose:
 
 - Administrative access
 - Infrastructure management
-- Security monitoring
+
+Systems:
+
+| Host | IP |
+|------|----|
+| FortiGate Management | 192.168.40.1 |
+| Mac Studio | 192.168.40.10 |
 
 ---
 
 ### DMZ_NET (VLAN 50)
 
-Contains:
-
-- DVWA
-- Juice Shop
-
 Purpose:
 
-- Attack simulation
-- Detection engineering
-- Web attack monitoring
+- Vulnerable applications
+- Web attack simulation
+
+Systems:
+
+| Host | IP |
+|------|----|
+| DVWA / WEB01 | 192.168.50.10 |
+| Juice Shop | 192.168.50.20:3000 |
 
 ---
 
-### HOME_NET (VLAN 60)
+## IDS Visibility
 
-Purpose:
+### Physical Suricata Sensor
 
-- Home devices
-- Media systems
-- Non-lab traffic
+Suricata operates as a dedicated passive IDS sensor.
 
----
+Capabilities include:
 
-### GUEST_NET (VLAN 70)
+- HTTP monitoring
+- DNS visibility
+- TLS metadata
+- JA3 / JA4 fingerprints
+- SQL Injection detection
+- Recon visibility
+- Attack telemetry
 
-Purpose:
+Traffic visibility includes:
 
-- Isolated Wi-Fi access
-- Internet only
-- No SOC access
-- No management access
-- Fully segmented
-
----
-
-## Remote Connectivity
-
-Remote administration is designed through:
-
-```text
-MacBook Pro
-      ↓
-WireGuard VPN
-      ↓
-AWS HUB
-      ↓
-IPsec Tunnel
-      ↓
-FortiGate 60F
-      ↓
-SOC Environment
-```
-
-This design enables secure remote access without exposing internal systems directly to the internet.
+- VLAN-tagged traffic
+- Inter-VLAN routing
+- DMZ attacks
+- Web exploitation activity
+- Attack simulation telemetry
 
 ---
 
-## Network Security Principles
+## Zero Trust Design Principles
 
-The environment follows enterprise security principles:
+The network follows several security principles:
 
-- Network segmentation
-- Least privilege access
-- Centralized routing
-- Passive monitoring
-- Secure remote access
-- Traffic visibility
-- Isolated guest access
-- Controlled attack simulation
+- Segmentation first
+- Least privilege
+- Controlled access
+- Visibility-driven monitoring
+- Isolated management
+- Secure remote administration
+
+---
+
+## Skills Demonstrated
+
+- Enterprise Networking
+- VLAN Segmentation
+- Firewall Administration
+- IDS Monitoring
+- SPAN Configuration
+- Network Security
+- Traffic Visibility
+- DMZ Design
+- Zero Trust Architecture
+- Security Monitoring
 
 ---
 
 ## Network Summary
 
-The network architecture was designed to simulate a realistic enterprise SOC environment with segmented infrastructure, centralized control, passive IDS monitoring, and secure remote administration.
+The SOC Homelab Enterprise network was designed to simulate a realistic enterprise segmented architecture with firewall visibility, VLAN separation, DMZ isolation, IDS monitoring, and secure administrative access.
+
+The network continues to evolve as new attack simulations, detections, dashboards, and monitoring capabilities are added throughout the lab lifecycle.
