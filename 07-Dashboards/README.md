@@ -22,7 +22,7 @@ The goal is to simulate real SOC visibility, improve detection engineering workf
 
 ### Splunk Enterprise
 
-Splunk functions as the **Primary SIEM** platform for centralized visibility and monitoring.
+Splunk Enterprise functions as the Primary SIEM platform responsible for centralized monitoring, correlation, dashboards, and attack visibility.
 
 Dashboard focus areas include:
 
@@ -40,7 +40,7 @@ Dashboard focus areas include:
 
 ### Wazuh XDR
 
-Wazuh functions as the **Secondary SIEM / XDR** platform.
+Wazuh functions as the Secondary SIEM / XDR platform focused on endpoint visibility, alerting, rule-based detections, and security event correlation.
 
 Dashboard focus areas include:
 
@@ -211,6 +211,20 @@ The dashboard environment improves:
 | Wazuh Security Dashboard | 🚧 In Progress |
 
 ---
+
+## Skills Demonstrated
+
+- SIEM Engineering
+- Detection Engineering
+- Threat Monitoring
+- SOC Dashboard Development
+- MITRE ATT&CK Mapping
+- Attack Correlation
+- Security Telemetry Analysis
+- Incident Visibility
+- Alert Prioritization
+- Splunk Dashboard Engineering
+- Wazuh XDR Monitoring
 
 ## Summary
 
