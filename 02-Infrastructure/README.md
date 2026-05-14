@@ -4,16 +4,43 @@ This section documents the physical and virtual infrastructure supporting the SO
 
 The lab combines enterprise-style networking, virtualization, SIEM platforms, endpoint telemetry, Active Directory services, IDS monitoring, and secure cloud-connected remote access.
 
+The objective was to design and manually build a realistic enterprise-style Security Operations Center (SOC) environment focused on practical blue-team operations, SIEM engineering, detection engineering, and incident monitoring.
+
 ---
 
 ## Infrastructure Goals
 
-- Simulate a real-world enterprise SOC environment
-- Build hands-on SIEM engineering experience
-- Practice blue-team monitoring and incident response
-- Support attack simulation and detection engineering
-- Maintain segmented infrastructure with centralized visibility
-- Provide secure remote administration through cloud connectivity
+The environment was designed to support:
+
+- Enterprise-style SOC workflows
+- SIEM engineering
+- Detection engineering
+- IDS monitoring
+- Attack simulation
+- Active Directory visibility
+- Endpoint telemetry
+- Secure cloud-connected remote access
+- Enterprise network segmentation
+- Long-term scalability
+
+Additional planning included maintaining a mixed-use environment capable of supporting both cybersecurity workloads and everyday home use.
+
+---
+
+## Hardware Selection & Planning
+
+The infrastructure was designed around:
+
+- Virtualization performance
+- Multi-VM scalability
+- Large memory capacity
+- SIEM workload support
+- Detection engineering
+- Enterprise-style segmentation
+- Stability and reliability
+- Long-term infrastructure growth
+
+The environment was manually planned and assembled to support realistic SOC workflows and enterprise-style security monitoring.
 
 ---
 
@@ -21,25 +48,31 @@ The lab combines enterprise-style networking, virtualization, SIEM platforms, en
 
 ### HomeLab Server (Primary Hypervisor)
 
+The core SOC environment runs on a manually built virtualization platform.
+
 | Component | Specification |
 |-----------|----------------|
 | CPU | Intel Core i9-14900K |
 | RAM | 128 GB DDR5 |
-| Storage | 4 TB NVMe SSD + 1 TB Samsung SSD |
+| Primary Storage | 4 TB NVMe SSD |
+| Secondary Storage | 1 TB Samsung SATA SSD |
 | Role | Hyper-V virtualization host |
 | OS | Windows Server 2022 + Hyper-V |
 
 Purpose:
 
 - Hosts core virtual machines
-- Supports SOC infrastructure
+- SIEM infrastructure
+- Active Directory
 - Attack simulation environment
 - Security telemetry collection
-- SIEM platforms
+- Detection engineering workflows
 
 ---
 
-### Mac Studio (Primary Admin Workstation)
+### Mac Studio (Primary SOC Administration Workstation)
+
+Primary workstation used for SOC administration and monitoring.
 
 | Component | Specification |
 |-----------|----------------|
@@ -47,21 +80,24 @@ Purpose:
 | CPU | Apple M2 Ultra |
 | RAM | 64 GB |
 | Storage | 1 TB SSD |
-| External Storage | OWC 4 TB SSD (Thunderbolt 5) |
-| Role | SOC administration & lab management |
+| External Storage | OWC 4 TB SSD (Thunderbolt) |
+| Role | SOC administration & monitoring |
 
-Purpose:
+Primary uses:
 
 - FortiGate administration
-- SIEM monitoring
-- Dashboard development
+- Splunk monitoring
+- Wazuh monitoring
+- Dashboard engineering
 - Detection engineering
-- Infrastructure management
-- Documentation and GitHub portfolio
+- Documentation
+- GitHub portfolio development
 
 ---
 
-### MacBook Pro (Remote Administration)
+### MacBook Pro (Remote Administration Platform)
+
+Dedicated remote access workstation.
 
 | Component | Specification |
 |-----------|----------------|
@@ -71,12 +107,62 @@ Purpose:
 | Storage | 1 TB SSD |
 | Role | Secure remote SOC access |
 
-Purpose:
+Primary uses:
 
-- Remote administration
+- Secure remote administration
 - WireGuard VPN access
 - AWS HUB connectivity
-- External monitoring and management
+- External monitoring
+- Remote SOC management
+
+---
+
+## Manual Hardware Assembly
+
+The SOC HomeLab server was manually assembled to support enterprise-style cybersecurity operations.
+
+Build process included:
+
+- Hardware component selection
+- Manual server assembly
+- Storage planning
+- Hypervisor deployment
+- Memory sizing for multi-VM workloads
+- Virtual network planning
+- VLAN integration
+- Resource optimization
+
+This process improved practical infrastructure planning and troubleshooting experience.
+
+---
+
+## Why Hyper-V
+
+Hyper-V was selected to support:
+
+- Enterprise Windows integration
+- Windows Server compatibility
+- Stable virtualization
+- VLAN-aware networking
+- Enterprise-style administration
+- Multi-VM resource management
+
+---
+
+## Network Interface Selection
+
+### Intel I350-T4
+
+A dedicated multi-port enterprise network adapter was selected to support segmented networking.
+
+Reasons for selection:
+
+- Enterprise reliability
+- Hyper-V compatibility
+- VLAN trunking support
+- Stable driver support
+- Dedicated lab networking
+- Multi-network segmentation
 
 ---
 
@@ -86,8 +172,8 @@ Purpose:
 
 | Hostname | IP Address | Role |
 |----------|------------|------|
-| WAZUH-01 | 192.168.10.10 | Wazuh XDR / SIEM |
-| SPLUNK-01 | 192.168.10.20 | Splunk Enterprise SIEM |
+| WAZUH-01 | 192.168.10.10 | Wazuh XDR / Secondary SIEM |
+| SPLUNK-01 | 192.168.10.20 | Splunk Enterprise / Primary SIEM |
 
 ---
 
@@ -95,8 +181,8 @@ Purpose:
 
 | Hostname | IP Address | Role |
 |----------|------------|------|
-| WIN11-USER-01 | 192.168.20.10 | Windows workstation |
-| KALI-01 | 192.168.20.20 | Attack simulation |
+| WIN11-USER-01 | 192.168.20.10 | Windows workstation telemetry |
+| KALI-01 | 192.168.20.20 | Attack simulation platform |
 
 ---
 
@@ -122,39 +208,64 @@ Purpose:
 
 | System | Role |
 |--------|------|
-| Suricata IDS (Physical) | Passive SPAN monitoring |
-| FortiGate 60F | Routing, firewall, VPN |
+| Suricata IDS (Physical Sensor) | Passive SPAN monitoring |
+| FortiGate 60F | Firewall, routing, VPN |
 | FortiSwitch 124E | VLAN switching and SPAN |
 
 ---
 
 ## Hyper-V Virtualization Model
 
-The SOC Homelab Enterprise environment is hosted on Windows Server 2022 using Hyper-V virtualization.
+The SOC environment is hosted on Windows Server 2022 using Hyper-V virtualization.
 
 Key design goals include:
 
-- Segmented enterprise architecture
+- Enterprise segmentation
 - Resource isolation
-- Attack simulation environment
-- SIEM visibility
-- Secure administrative access
-- Enterprise-style monitoring workflows
+- Multi-SIEM visibility
+- Attack simulation
+- Security telemetry
+- Secure administration
+- Detection engineering
+- SOC workflow simulation
+
+---
+
+## Infrastructure Philosophy
+
+The environment was built around several core principles:
+
+- Stability over complexity
+- Enterprise realism
+- Segmentation first
+- Visibility over noise
+- Practical learning
+- Detection-driven monitoring
+- Continuous improvement
+
+---
+
+## Skills Demonstrated
+
+- Infrastructure Planning
+- Hyper-V Virtualization
+- Enterprise Networking
+- VLAN Segmentation
+- SIEM Engineering
+- IDS Monitoring
+- Active Directory Administration
+- Endpoint Telemetry
+- Detection Engineering
+- Security Monitoring
+- Cloud-Connected Administration
+- Enterprise SOC Architecture
 
 ---
 
 ## Infrastructure Summary
 
-The environment combines:
+The SOC Homelab Enterprise infrastructure was manually designed and assembled to simulate a realistic enterprise Security Operations Center (SOC) environment.
 
-- Physical enterprise networking
-- Hyper-V virtualization
-- Active Directory services
-- Endpoint telemetry
-- IDS monitoring
-- Multi-SIEM visibility
-- Cloud-connected remote access
-- Detection engineering workflows
-- Attack simulation capabilities
+The architecture combines physical networking, virtualization, Active Directory, IDS monitoring, endpoint telemetry, SIEM engineering, attack simulation, and secure cloud-connected administration to support practical SOC analyst development and enterprise security engineering experience.
 
-This infrastructure is continuously expanded to improve practical SOC analyst skills and enterprise security engineering experience.
+This infrastructure continues to evolve as new detections, attack simulations, dashboards, and monitoring capabilities are added throughout the lab lifecycle.
