@@ -6,11 +6,11 @@ The objective of this simulation was to emulate a real-world SQL Injection attac
 
 The goal was to validate:
 
-- Network visibility
+- Attack telemetry visibility
 - IDS monitoring
 - EVE JSON telemetry generation
 - SIEM log ingestion
-- Detection engineering opportunities
+- Detection engineering workflows
 - Dashboard visibility across the SOC stack
 
 ---
@@ -40,7 +40,7 @@ The objective of the simulation was to validate:
 - Wazuh alert visibility
 - Detection engineering opportunities
 
-Attack traffic traversed the segmented network and was observed through the FortiSwitch SPAN configuration feeding the physical Suricata sensor.
+Traffic traversed segmented VLANs and was observed through the FortiSwitch SPAN configuration feeding the physical Suricata sensor.
 
 ---
 
@@ -66,7 +66,7 @@ Detection & Dashboard Visibility
 
 ## Payloads Used
 
-The following SQL Injection payloads were tested during the simulation:
+The following SQL Injection payloads were successfully tested during the simulation:
 
 ```sql
 ' OR 1=1--
@@ -74,7 +74,15 @@ OR SLEEP(5)--
 UNION SELECT
 ```
 
-These payloads were executed against vulnerable search and authentication functionality in Juice Shop and DVWA to generate realistic web attack telemetry.
+All payloads successfully generated telemetry and triggered custom detections.
+
+A benign search request was also tested:
+
+```text
+apple
+```
+
+The benign request did **not** trigger the detection logic, validating false-positive reduction.
 
 ---
 
@@ -84,14 +92,14 @@ The attack generated real telemetry across the SOC monitoring stack.
 
 Observed artifacts included:
 
-- HTTP requests containing URL-encoded SQL Injection payloads
+- URL-encoded SQL Injection payloads
 - Source and destination IP visibility
 - HTTP URL logging
 - User-Agent visibility
 - VLAN-tagged traffic visibility
 - EVE JSON telemetry from Suricata
 - Splunk searchable events
-- Wazuh alert ingestion
+- Wazuh alert generation
 
 ### Example Observed Traffic
 
@@ -107,34 +115,58 @@ Example Payload:
 
 ---
 
-## Detection Challenges
+## Splunk Detection Engineering
 
-During testing, default Emerging Threats (ET) SQL Injection signatures did not consistently trigger for all attack variations.
+Default Emerging Threats (ET) SQL Injection signatures did not consistently trigger for all attack variations.
 
-### Findings
+### Detection Challenges
+
+Key findings included:
 
 - Some SQL Injection response rules were disabled or commented
 - URL-encoded payloads reduced signature reliability
 - Generic SQL Injection signatures did not consistently detect all requests
-- Time-based and encoded payloads generated telemetry without reliable alerting
+- Time-based payloads generated telemetry without reliable alerting
 
-This created an opportunity to improve visibility through custom detection engineering using network telemetry and SIEM correlation.
+This created an opportunity to develop custom SQL Injection detection logic.
+
+### Detection Improvements
+
+Custom Splunk detection logic was developed using:
+
+- URL-encoded payload inspection
+- HTTP request visibility
+- Source and destination correlation
+- Payload analysis
+- Flow normalization using `dc(flow_id)`
+- MITRE ATT&CK mapping
+
+Due to SPAN visibility across trunked VLAN traffic, duplicate events were observed. Attack counting was normalized using distinct flow IDs (`dc(flow_id)`) to avoid overcounting.
+
+### Custom SQL Injection Detection — Splunk
+
+![Splunk SQL Injection Detection](./custom-sqli-detection-splunk.png)
 
 ---
 
-## Detection Improvements
+## Wazuh Alert Correlation
 
-To improve SQL Injection visibility, custom detection logic was developed using Splunk searches and network telemetry.
+Custom Wazuh rules successfully detected SQL Injection activity and escalated severity when server-side application errors occurred.
 
-### Engineering Improvements
+### Wazuh Detection Highlights
 
-- HTTP URL monitoring
-- Source and destination IP correlation
-- Payload visibility analysis
-- URL-encoded request inspection
-- Flow deduplication using `dc(flow_id)`
+- Rule ID `100700` — SQL Injection pattern detection
+- Rule ID `100701` — Critical SQL Injection with server error
+- Severity escalation based on HTTP response behavior
+- Payload visibility
+- Source and destination attribution
+- Real-time alert generation
 
-This approach significantly improved attack visibility and enabled more reliable SQL Injection detection across the SOC monitoring environment.
+Critical alerts were generated when SQL Injection attempts produced server-side HTTP `500` errors.
+
+### Critical SQL Injection Alert — Wazuh
+
+![Wazuh SQL Injection Detection](./wazuh-sqli-detection.png)
 
 ---
 
@@ -153,8 +185,23 @@ The attack simulation aligns with **MITRE ATT&CK T1190 — Exploit Public-Facing
 Key lessons from this simulation included:
 
 - Signature-based detection alone is insufficient
-- Detection engineering is required to improve visibility
-- URL encoding can reduce detection effectiveness
-- SPAN visibility provided reliable telemetry across VLANs
-- Splunk and Wazuh correlation improved investigation capability
-- Real attack simulations provide valuable SOC engineering experience
+- Detection engineering improves visibility
+- URL encoding reduces signature reliability
+- SPAN visibility creates duplicate telemetry
+- `dc(flow_id)` improves event normalization
+- Splunk and Wazuh correlation strengthens investigations
+- Real attack simulations improve SOC analyst readiness
+
+---
+
+## Detection Outcome
+
+The SQL Injection simulation successfully demonstrated:
+
+- End-to-end attack visibility
+- Network telemetry collection
+- Custom detection engineering
+- False-positive reduction
+- Wazuh severity escalation
+- SIEM correlation across platforms
+- Real-world SOC analyst workflow validation
