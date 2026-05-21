@@ -145,7 +145,7 @@ Due to SPAN visibility across trunked VLAN traffic, duplicate events were observ
 
 ### Custom SQL Injection Detection — Splunk
 
-![Splunk SQL Injection Detection](./custom-sqli-detection-splunk.png)
+![Splunk SQL Injection Detection](./screenshots/sqli/custom-sqli-detection-splunk.png)
 
 ---
 
@@ -166,7 +166,7 @@ Critical alerts were generated when SQL Injection attempts produced server-side 
 
 ### Critical SQL Injection Alert — Wazuh
 
-![Wazuh SQL Injection Detection](./wazuh-sqli-detection.png)
+![Wazuh SQL Injection Detection](./screenshots/sqli/wazuh-sqli-detection.png)
 
 ---
 
