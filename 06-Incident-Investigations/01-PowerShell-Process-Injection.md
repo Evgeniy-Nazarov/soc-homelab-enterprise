@@ -1,7 +1,6 @@
+# PowerShell Process Injection Investigation
 
-# PowerShell Process Injection Investigation (MITRE T1055)
-
-## Incident Summary
+## Executive Summary
 
 A CrowdStrike Falcon detection identified suspicious PowerShell activity associated with a potential Process Injection attack on a Windows Server 2022 endpoint.
 
@@ -11,121 +10,120 @@ CrowdStrike successfully detected and prevented execution before compromise coul
 
 ---
 
-## Environment
+## Incident Overview
 
 | Field | Value |
 |---------|---------|
-| Host | VMI1146645 |
-| Operating System | Windows Server 2022 |
-| User | morgan |
-| Login Type | Remote Interactive (RDP) |
-| Detection | PShellInjectSysProc |
+| Investigation Type | Process Injection Investigation |
 | Severity | High |
-| MITRE ATT&CK | T1055 Process Injection |
+| Detection Source | CrowdStrike Falcon |
+| Host | VMI1146645 |
+| User | morgan |
+| Status | Blocked / Contained |
+| MITRE ATT&CK | T1055, T1059.001, T1105, T1071.001 |
 
 ---
 
-## Investigation Objectives
+## Detection Summary
 
-- Determine whether malicious code execution occurred.
-- Identify the source of the PowerShell script.
-- Validate network communications associated with the activity.
-- Assess impact to the endpoint.
-- Collect evidence for containment and remediation.
+CrowdStrike Falcon generated a high-severity detection indicating PowerShell-based Process Injection activity.
 
----
-
-## Investigation Process
-
-### Step 1 – Initial Alert Review
-
-CrowdStrike Falcon generated a High Severity detection indicating PowerShell-based process injection activity.
-
-The alert identified execution of a PowerShell script named:
+The investigation identified execution of:
 
 ```powershell
 Start-Hollow.ps1
 ```
 
-The script name strongly suggested Process Hollowing behavior associated with MITRE ATT&CK T1055.
+The script demonstrated behavior consistent with Process Hollowing and PowerShell-based malware execution.
+
+Observed activity included:
+
+- PowerShell ExecutionPolicy bypass
+- Malicious script execution
+- DNS communication to GitHub infrastructure
+- Potential payload staging activity
+- Process Injection behavior
 
 ---
 
-### Step 2 – Threat Intelligence Validation
+## Evidence Collected
 
-The script was analyzed using VirusTotal.
+### CrowdStrike Script Execution Evidence
+
+![CrowdStrike Script Execution Evidence](screenshots/powershell-process-injection/crowdstrike-script-execution-evidence.png)
+
+CrowdStrike telemetry identified execution of a malicious PowerShell script during an active RDP session.
+
+Observed behavior included:
+
+- Execution of `DiskCleanupTask.ps1`
+- Creation of `Start-Hollow.ps1`
+- PowerShell ExecutionPolicy bypass
+- User-driven execution activity
+
+Assessment:
+
+The activity is consistent with a PowerShell-based malware loader attempting to stage a Process Injection attack.
+
+---
+
+### VirusTotal Malware Analysis
+
+![VirusTotal Malware Analysis](screenshots/powershell-process-injection/virustotal-malicious-powershell-analysis.png)
+
+The recovered PowerShell script was analyzed using VirusTotal.
 
 Results showed:
 
-- 28 security vendors detected the file as malicious.
-- Multiple vendors classified the file as Trojan or PowerShell malware.
-- Detection names referenced Process Hollowing and PowerShell-based code injection.
+- 28 security vendors detected the file as malicious
+- Multiple vendors classified the file as Trojan malware
+- Detection names referenced Process Hollowing and PowerShell injection techniques
 
 Assessment:
 
-The file presents a high-confidence malicious classification and should be considered hostile.
+The file represents a high-confidence malicious PowerShell payload associated with process injection activity.
 
 ---
 
-### Step 3 – Domain Reputation Analysis
+### Domain Reputation Verification
 
-Investigation identified DNS activity involving:
+![Domain Reputation](screenshots/powershell-process-injection/virustotal-domain-reputation-check.png)
+
+Investigation identified outbound communication involving:
 
 ```text
 raw.githubusercontent.com
 ```
 
-VirusTotal reputation analysis indicated that the domain itself is generally trusted infrastructure.
+VirusTotal reputation analysis showed the domain itself is legitimate GitHub infrastructure.
 
 Assessment:
 
-GitHub infrastructure was likely used as a payload staging location rather than being malicious itself.
+Although the domain is trusted, GitHub content delivery infrastructure is frequently abused by threat actors to host malicious scripts and stage payload delivery.
+
+The observed communication is consistent with malware retrieval activity.
 
 ---
 
-### Step 4 – Endpoint Activity Review
+### CrowdStrike DNS Request Evidence
 
-CrowdStrike telemetry identified PowerShell script execution activity.
+![CrowdStrike DNS Request Evidence](screenshots/powershell-process-injection/crowdstrike-dns-request-evidence.png)
 
-Observed actions included:
-
-- Script execution from user context.
-- Temporary PowerShell policy test files created.
-- Execution of Start-Hollow.ps1.
-- PowerShell execution policy bypass behavior.
-
-Assessment:
-
-Activity is consistent with PowerShell-based malware staging and execution attempts.
-
----
-
-### Step 5 – Network Activity Review
-
-CrowdStrike DNS telemetry recorded outbound requests to:
+CrowdStrike recorded DNS activity to:
 
 ```text
 raw.githubusercontent.com
 ```
 
+Observed behavior included:
+
+- DNS lookup request
+- Outbound HTTPS connection attempt
+- Communication during script execution
+
 Assessment:
 
-The endpoint attempted to retrieve content from GitHub-hosted infrastructure.
-
-This behavior is commonly observed in malware delivery chains where payloads are hosted on trusted cloud platforms.
-
----
-
-## Findings
-
-| Finding | Status |
-|----------|----------|
-| Malicious PowerShell script identified | Confirmed |
-| VirusTotal malicious detections | Confirmed |
-| Process Hollowing behavior observed | Suspected |
-| GitHub staging infrastructure used | Confirmed |
-| PowerShell execution activity | Confirmed |
-| Successful compromise | Not Confirmed |
+The endpoint attempted to retrieve content from external GitHub-hosted infrastructure during execution of the malicious PowerShell script.
 
 ---
 
@@ -140,39 +138,43 @@ This behavior is commonly observed in malware delivery chains where payloads are
 
 ---
 
-## Analyst Assessment
+## Timeline
 
-Based on available evidence, the activity represents a high-confidence malicious PowerShell execution attempt associated with Process Injection techniques.
-
-The malicious script was successfully detected by CrowdStrike Falcon, and no evidence was identified confirming successful payload execution beyond the initial staging activity.
-
-The incident demonstrates the importance of behavioral detection capabilities for PowerShell abuse and process injection techniques.
-
----
-
-## Evidence
-
-### VirusTotal File Analysis
-
-![VirusTotal File Analysis](screenshots/powershell-process-injection/virustotal-malicious-powershell-analysis.png)
-
-### VirusTotal Domain Reputation
-
-![VirusTotal Domain Reputation](screenshots/powershell-process-injection/virustotal-domain-reputation-check.png)
-
-### CrowdStrike Script Execution Evidence
-
-![CrowdStrike Script Execution Evidence](screenshots/powershell-process-injection/crowdstrike-script-execution-evidence.png)
-
-### CrowdStrike DNS Request Evidence
-
-![CrowdStrike DNS Request Evidence](screenshots/powershell-process-injection/crowdstrike-dns-request-evidence.png)
+| Time | Event |
+|--------|--------|
+| 08:50 | User established RDP session |
+| 08:53 | DiskCleanupTask.ps1 executed |
+| 08:53 | Start-Hollow.ps1 created |
+| 08:53 | DNS request to raw.githubusercontent.com |
+| 08:53 | Outbound HTTPS communication initiated |
+| 08:53 | CrowdStrike generated detection |
+| 08:53 | Malicious script quarantined |
+| 08:53 | Process Injection attempt blocked |
 
 ---
 
-## Lessons Learned
+## Findings
 
-- Trusted cloud services can be abused for malware delivery.
-- PowerShell remains a common attack vector for initial execution and defense evasion.
-- Threat intelligence validation significantly improves investigation confidence.
-- Behavioral detections are effective against Process Injection techniques.
+The investigation confirmed execution of a malicious PowerShell script associated with Process Hollowing techniques.
+
+Key findings:
+
+- Malicious PowerShell script identified
+- VirusTotal confirmed malicious reputation
+- Process Injection behavior detected
+- GitHub infrastructure used for payload staging
+- DNS communication observed during execution
+- CrowdStrike successfully blocked the attack
+- No persistence mechanisms identified
+
+---
+
+## Conclusion
+
+The alert was determined to be a true positive PowerShell-based Process Injection attempt.
+
+The malicious script leveraged PowerShell ExecutionPolicy bypass techniques and attempted to retrieve content from GitHub-hosted infrastructure before initiating Process Injection activity.
+
+CrowdStrike Falcon successfully detected, blocked, and quarantined the malicious script before successful compromise could be confirmed.
+
+No evidence of persistence, additional payload execution, or lateral movement was identified following containment actions.
