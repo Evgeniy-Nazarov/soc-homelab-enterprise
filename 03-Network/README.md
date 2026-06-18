@@ -1,8 +1,8 @@
 # Network Architecture
 
-This section documents the network segmentation, VLAN design, firewall architecture, switching model, IDS visibility, and traffic monitoring implemented within the SOC Homelab Enterprise environment.
+This section documents the network segmentation, VLAN design, firewall architecture, switching model, IDS visibility, cloud connectivity, and traffic monitoring implemented within the SOC Homelab Enterprise environment.
 
-The objective was to simulate a realistic enterprise-style segmented security architecture with centralized visibility, secure routing, and IDS monitoring.
+The objective was to simulate a realistic enterprise-style security architecture with centralized visibility, secure routing, attack simulation capabilities, and enterprise monitoring workflows.
 
 ---
 
@@ -10,15 +10,16 @@ The objective was to simulate a realistic enterprise-style segmented security ar
 
 The environment was designed to support:
 
-- Enterprise network segmentation
-- Secure routing
-- DMZ isolation
-- IDS visibility
-- Traffic monitoring
-- Attack simulation
-- Secure management access
-- Zero Trust principles
-- Enterprise SOC workflows
+* Enterprise network segmentation
+* Secure inter-VLAN routing
+* DMZ isolation
+* IDS visibility
+* Traffic monitoring
+* Attack simulation
+* Secure management access
+* Cloud integration
+* Zero Trust principles
+* Enterprise SOC workflows
 
 ---
 
@@ -26,15 +27,16 @@ The environment was designed to support:
 
 The network is segmented into multiple security zones.
 
-| VLAN | Network | Subnet | Purpose |
-|------|----------|---------|----------|
-| VLAN 10 | SOC_NET | 192.168.10.0/24 | SIEM and security tooling |
-| VLAN 20 | USER_NET | 192.168.20.0/24 | User and attack simulation systems |
-| VLAN 30 | SERVER_NET | 192.168.30.0/24 | Server infrastructure |
-| VLAN 40 | MGMT_NET | 192.168.40.0/24 | Administrative management |
-| VLAN 50 | DMZ_NET | 192.168.50.0/24 | Public-facing vulnerable applications |
-| VLAN 60 | HOME_NET | Internal home network |
-| VLAN 70 | GUEST_NET | Guest / isolated Wi-Fi |
+| VLAN    | Network    | Subnet          | Purpose                               |
+| ------- | ---------- | --------------- | ------------------------------------- |
+| VLAN 10 | SOC_NET    | 192.168.10.0/24 | SIEM and security infrastructure      |
+| VLAN 20 | USER_NET   | 192.168.20.0/24 | Domain-joined user workstations       |
+| VLAN 30 | SERVER_NET | 192.168.30.0/24 | Active Directory and backend services |
+| VLAN 40 | MGMT_NET   | 192.168.40.0/24 | Administrative management             |
+| VLAN 50 | DMZ_NET    | 192.168.50.0/24 | Public-facing applications            |
+| VLAN 60 | HOME_NET   | 192.168.60.0/24 | Home and media devices                |
+| VLAN 70 | GUEST_NET  | 192.168.70.0/24 | Isolated guest Wi-Fi                  |
+| VLAN 80 | RED_TEAM   | 192.168.80.0/24 | Attack simulation environment         |
 
 ---
 
@@ -44,12 +46,13 @@ The network is segmented into multiple security zones.
 
 Primary enterprise firewall responsible for:
 
-- Inter-VLAN routing
-- Security policy enforcement
-- Firewall visibility
-- VPN connectivity
-- Network segmentation
-- Administrative access
+* Inter-VLAN routing
+* Security policy enforcement
+* VPN connectivity
+* IPSec cloud integration
+* Traffic inspection
+* Network segmentation
+* Administrative access
 
 Primary management interface:
 
@@ -63,39 +66,42 @@ Primary management interface:
 
 Managed switch responsible for:
 
-- VLAN switching
-- Port segmentation
-- SPAN mirroring
-- IDS visibility
-- Trunking
+* VLAN switching
+* Port segmentation
+* SPAN mirroring
+* IDS visibility
+* Trunking
+* Traffic aggregation
 
 ---
 
 ## SPAN / Port Mirroring Architecture
 
-Traffic visibility is achieved using SPAN mirroring.
-
-Mirror design:
+Traffic visibility is achieved using a dedicated SPAN configuration.
 
 ```text
-FortiGate Trunk (Port 1)
-            +
-Hyper-V Trunk (Port 7)
-            ↓
-SPAN Mirror
-            ↓
-Port 8
-            ↓
-Suricata IDS Sensor
+FortiGate
+     +
+Hyper-V Host
+     ↓
+FortiSwitch SPAN
+     ↓
+Physical Suricata Sensor
+     ↓
+Splunk Enterprise
+     +
+Wazuh XDR
 ```
 
 This configuration provides:
 
-- East-west visibility
-- North-south visibility
-- Inter-VLAN monitoring
-- DMZ traffic monitoring
-- Attack telemetry
+* East-west visibility
+* North-south visibility
+* Inter-VLAN monitoring
+* DMZ traffic monitoring
+* User endpoint visibility
+* Attack telemetry
+* Security event collection
 
 ---
 
@@ -105,15 +111,15 @@ This configuration provides:
 
 Purpose:
 
-- SIEM infrastructure
-- Security tooling
-- Monitoring systems
+* SIEM infrastructure
+* Security monitoring
+* Detection engineering
 
 Systems:
 
-| Host | IP |
-|------|----|
-| WAZUH-01 | 192.168.10.10 |
+| Host      | IP Address    |
+| --------- | ------------- |
+| WAZUH-01  | 192.168.10.10 |
 | SPLUNK-01 | 192.168.10.20 |
 
 ---
@@ -122,15 +128,18 @@ Systems:
 
 Purpose:
 
-- User systems
-- Attack simulation
+* Domain-joined user workstations
+* Endpoint monitoring
+* Authentication telemetry
 
 Systems:
 
-| Host | IP |
-|------|----|
+| Host          | IP Address    |
+| ------------- | ------------- |
 | WIN11-USER-01 | 192.168.20.10 |
-| KALI-01 | 192.168.20.20 |
+| WIN11-USER-02 | 192.168.20.20 |
+
+Both systems are joined to the SOCLAB.LOCAL Active Directory domain and generate Windows security and Sysmon telemetry.
 
 ---
 
@@ -138,15 +147,26 @@ Systems:
 
 Purpose:
 
-- Identity services
-- Server workloads
+* Identity services
+* Infrastructure services
+* Backend application services
 
 Systems:
 
-| Host | IP |
-|------|----|
+| Host | IP Address    |
+| ---- | ------------- |
 | DC01 | 192.168.30.10 |
 | DB01 | 192.168.30.20 |
+
+DC01 serves as the primary Domain Controller for the SOCLAB.LOCAL environment and provides:
+
+* Active Directory Domain Services
+* DNS Services
+* DHCP Services
+* Group Policy Management
+* Centralized Authentication
+
+The backend database supporting DVWA resides within SERVER_NET and is separated from the application layer through network segmentation and firewall controls.
 
 ---
 
@@ -154,15 +174,15 @@ Systems:
 
 Purpose:
 
-- Administrative access
-- Infrastructure management
+* Administrative access
+* Infrastructure management
 
 Systems:
 
-| Host | IP |
-|------|----|
-| FortiGate Management | 192.168.40.1 |
-| Mac Studio | 192.168.40.10 |
+| Host                        | IP Address      |
+| --------------------------- | --------------- |
+| FortiGate Management        | 192.168.40.1    |
+| Administrative Workstations | 192.168.40.0/24 |
 
 ---
 
@@ -170,15 +190,83 @@ Systems:
 
 Purpose:
 
-- Vulnerable applications
-- Web attack simulation
+* Public-facing services
+* Web application testing
+* Attack simulation targets
 
 Systems:
 
-| Host | IP |
-|------|----|
-| DVWA / WEB01 | 192.168.50.10 |
-| Juice Shop | 192.168.50.20:3000 |
+| Host       | IP Address    |
+| ---------- | ------------- |
+| DVWA       | 192.168.50.10 |
+| Juice Shop | 192.168.50.20 |
+
+The DVWA web application resides within the DMZ while its supporting database resides within SERVER_NET, simulating a common enterprise multi-tier application architecture.
+
+---
+
+### HOME_NET (VLAN 60)
+
+Purpose:
+
+* Personal devices
+* Media services
+* Daily household use
+
+This network remains separated from SOC infrastructure and attack simulation environments.
+
+---
+
+### GUEST_NET (VLAN 70)
+
+Purpose:
+
+* Guest wireless access
+* Internet-only connectivity
+
+This network is isolated from all internal resources.
+
+---
+
+### RED_TEAM (VLAN 80)
+
+Purpose:
+
+* Adversary simulation
+* Detection validation
+* Security testing
+
+Systems:
+
+| Host    | IP Address    |
+| ------- | ------------- |
+| KALI-01 | 192.168.80.10 |
+
+The RED_TEAM network provides a dedicated environment for offensive security testing while remaining isolated from production monitoring systems.
+
+---
+
+## Cloud Connectivity
+
+### AWS-HUB
+
+AWS-HUB provides secure cloud connectivity through an IPSec VPN tunnel integrated with the FortiGate firewall.
+
+Functions include:
+
+* Secure remote connectivity
+* Log forwarding
+* Splunk Universal Forwarder
+* Wazuh Agent telemetry
+* Hybrid monitoring architecture
+
+Systems:
+
+| Host    | Role                                     |
+| ------- | ---------------------------------------- |
+| AWS-HUB | Cloud Monitoring and Log Collection Node |
+
+AWS-HUB forwards telemetry to both Splunk Enterprise and Wazuh XDR through encrypted connectivity.
 
 ---
 
@@ -186,25 +274,27 @@ Systems:
 
 ### Physical Suricata Sensor
 
-Suricata operates as a dedicated passive IDS sensor.
+Suricata operates as a dedicated passive IDS sensor connected to a SPAN destination port.
 
 Capabilities include:
 
-- HTTP monitoring
-- DNS visibility
-- TLS metadata
-- JA3 / JA4 fingerprints
-- SQL Injection detection
-- Recon visibility
-- Attack telemetry
+* HTTP monitoring
+* DNS visibility
+* TLS metadata
+* SQL Injection detection
+* Brute Force detection
+* Attack visibility
+* Security telemetry collection
 
 Traffic visibility includes:
 
-- VLAN-tagged traffic
-- Inter-VLAN routing
-- DMZ attacks
-- Web exploitation activity
-- Attack simulation telemetry
+* VLAN-tagged traffic
+* Inter-VLAN routing
+* User workstation activity
+* Active Directory traffic
+* DMZ activity
+* Attack simulation traffic
+* Cloud-connected telemetry
 
 ---
 
@@ -212,32 +302,37 @@ Traffic visibility includes:
 
 The network follows several security principles:
 
-- Segmentation first
-- Least privilege
-- Controlled access
-- Visibility-driven monitoring
-- Isolated management
-- Secure remote administration
+* Segmentation first
+* Least privilege
+* Controlled access
+* Visibility-driven monitoring
+* Isolated management
+* Dedicated attack infrastructure
+* Secure cloud connectivity
 
 ---
 
 ## Skills Demonstrated
 
-- Enterprise Networking
-- VLAN Segmentation
-- Firewall Administration
-- IDS Monitoring
-- SPAN Configuration
-- Network Security
-- Traffic Visibility
-- DMZ Design
-- Zero Trust Architecture
-- Security Monitoring
+* Enterprise Networking
+* VLAN Segmentation
+* FortiGate Administration
+* FortiSwitch Administration
+* Active Directory Integration
+* IPSec VPN Configuration
+* IDS Monitoring
+* SPAN Configuration
+* Network Security
+* Traffic Visibility
+* DMZ Design
+* Cloud Integration
+* Zero Trust Architecture
+* Security Monitoring
 
 ---
 
 ## Network Summary
 
-The SOC Homelab Enterprise network was designed to simulate a realistic enterprise segmented architecture with firewall visibility, VLAN separation, DMZ isolation, IDS monitoring, and secure administrative access.
+The SOC Homelab Enterprise network was designed to simulate a realistic enterprise security architecture using segmented VLANs, FortiGate security controls, FortiSwitch switching infrastructure, physical Suricata monitoring, Active Directory integration, cloud-connected telemetry, and dedicated attack simulation environments.
 
-The network continues to evolve as new attack simulations, detections, dashboards, and monitoring capabilities are added throughout the lab lifecycle.
+The architecture provides visibility across user, server, management, DMZ, cloud, and red team networks while supporting realistic SOC monitoring, detection engineering, incident investigation, and security operations workflows.
