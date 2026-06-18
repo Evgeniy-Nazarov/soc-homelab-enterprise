@@ -1,73 +1,80 @@
 # Architecture
 
-This section documents the high-level architecture of the SOC Homelab Enterprise project, including network segmentation, security zones, traffic visibility, SIEM architecture, cloud connectivity, and detection workflow.
+This section documents the high-level architecture of the SOC Homelab Enterprise project, including network segmentation, security zones, traffic visibility, SIEM architecture, cloud integration, and security monitoring workflows.
 
 ## Architecture Goals
 
 - Build an enterprise-style segmented SOC environment
-- Separate SOC, user, server, management, DMZ, home, and guest networks
-- Route and control inter-VLAN traffic through FortiGate
-- Monitor mirrored network traffic with a physical Suricata IDS sensor
-- Ingest telemetry into Splunk Enterprise and Wazuh XDR
-- Support remote access through AWS HUB and VPN connectivity
-- Maintain a clean, documented, portfolio-ready security architecture
+- Separate SOC, user, server, management, DMZ, home, guest, and red team networks
+- Route and control inter-VLAN traffic through FortiGate 60F
+- Monitor mirrored network traffic using a dedicated physical Suricata IDS sensor
+- Centralize security telemetry in Splunk Enterprise and Wazuh XDR
+- Support cloud connectivity and remote monitoring through AWS integration
+- Simulate real-world SOC analyst workflows, investigations, and detections
+- Maintain a documented, portfolio-ready enterprise security architecture
 
 ## Core Architecture Components
 
 | Component | Role |
 |----------|------|
-| FortiGate 60F | Firewall, routing, segmentation, VPN |
-| FortiSwitch 124E | Managed switching, VLAN trunking, SPAN |
-| Suricata IDS | Passive network monitoring through SPAN |
-| Splunk Enterprise | Primary SIEM, dashboards, analytics |
-| Wazuh XDR | Secondary SIEM/XDR, alerting, correlation |
-| Active Directory | Identity and Windows domain services |
-| Sysmon | Windows endpoint telemetry |
-| AWS HUB | Cloud VPN hub and remote access point |
-| Hyper-V | Virtualization platform for lab systems |
+| FortiGate 60F | Firewall, VLAN routing, segmentation, VPN connectivity |
+| FortiSwitch 124E | Managed switching, VLAN trunking, SPAN configuration |
+| Physical Suricata Sensor | Passive IDS monitoring of mirrored network traffic |
+| Splunk Enterprise | Primary SIEM, log analysis, dashboards, investigations |
+| Wazuh XDR | Endpoint monitoring, alerting, correlation, threat detection |
+| Active Directory | Identity, authentication, DNS, DHCP, Group Policy |
+| Sysmon | Advanced Windows endpoint telemetry |
+| AWS HUB | Cloud integration, remote monitoring, VPN connectivity |
+| Hyper-V | Virtualization platform hosting lab infrastructure |
 
 ## Network Zones
 
 | VLAN | Network | Purpose |
 |------|---------|---------|
-| VLAN 10 | SOC_NET | SIEM and SOC infrastructure |
-| VLAN 20 | USER_NET | User workstation and attack simulation |
-| VLAN 30 | SERVER_NET | Active Directory, DNS, database services |
-| VLAN 40 | MGMT_NET | Management workstation and admin access |
-| VLAN 50 | DMZ_NET | Vulnerable web applications |
-| VLAN 60 | HOME_NET | Home and media devices |
-| VLAN 70 | GUEST_NET | Isolated guest Wi-Fi, internet only |
+| VLAN 10 | SOC_NET | SIEM, monitoring, and SOC infrastructure |
+| VLAN 20 | USER_NET | Domain-joined user workstations |
+| VLAN 30 | SERVER_NET | Active Directory, DNS, DHCP, and server infrastructure |
+| VLAN 40 | MGMT_NET | Administrative management systems |
+| VLAN 50 | DMZ_NET | Public-facing and vulnerable web applications |
+| VLAN 60 | HOME_NET | Home and family devices |
+| VLAN 70 | GUEST_WIFI | Isolated guest wireless network |
+| VLAN 80 | RED_TEAM | Attack simulation and adversary systems |
 
 ## Monitoring Design
 
-Network visibility is provided by a physical Suricata IDS sensor connected to a FortiSwitch SPAN destination port.
+Network visibility is provided by a dedicated physical Suricata IDS sensor connected to a FortiSwitch SPAN destination port.
 
-The sensor receives mirrored VLAN-tagged traffic and forwards security telemetry into:
+The sensor receives mirrored VLAN-tagged traffic from multiple security zones and forwards telemetry to:
 
 - Splunk Enterprise
 - Wazuh XDR
 
-This design allows the lab to simulate real SOC monitoring workflows without placing the IDS inline.
+This architecture enables passive network monitoring without introducing inline latency or affecting production traffic.
 
 ## Detection Workflow
 
-The core detection workflow is:
+The core security monitoring workflow is:
 
 ```text
 Attack Simulation
         ↓
 Network Traffic
         ↓
-Suricata IDS
+FortiGate / FortiSwitch
         ↓
-Splunk / Wazuh
+SPAN Port
         ↓
-Detection / Alert
+Physical Suricata Sensor
         ↓
-Dashboard / Investigation
+Splunk Enterprise / Wazuh XDR
         ↓
-Documentation
+Detection & Alerting
+        ↓
+Investigation & Analysis
+        ↓
+Documentation & Reporting
 ```
+
 ## Current Architecture Diagram
 
 ![SOC Homelab Topology](soc-homelab-topology.png)
