@@ -1,8 +1,8 @@
 # Roadmap
 
-This section documents the evolution, milestones, completed phases, and future development plans for the SOC Homelab Enterprise environment.
+This section documents the evolution, completed milestones, current priorities, and future development plans for the SOC Homelab Enterprise environment.
 
-The lab is built incrementally to simulate a realistic enterprise SOC with practical blue-team workflows, detection engineering, SIEM monitoring, and incident investigations.
+The project was built incrementally to simulate a realistic enterprise Security Operations Center (SOC) with enterprise network segmentation, Active Directory, IDS monitoring, SIEM operations, detection engineering, incident investigations, and cloud-connected infrastructure.
 
 ---
 
@@ -12,10 +12,11 @@ The lab is built incrementally to simulate a realistic enterprise SOC with pract
 
 Completed:
 
-- Hyper-V environment deployment
-- Windows Server 2022 installation
-- Initial virtualization setup
-- Core network deployment
+* Windows Server 2022 deployment
+* Hyper-V virtualization platform
+* Enterprise virtual networking
+* Multi-VLAN architecture design
+* Infrastructure deployment and validation
 
 Status:
 
@@ -25,15 +26,17 @@ Completed
 
 ---
 
-### Phase 2 — Enterprise Segmentation
+### Phase 2 — Active Directory Deployment
 
 Completed:
 
-- VLAN segmentation
-- SOC network isolation
-- USER / SERVER / MGMT separation
-- DMZ deployment
-- HOME / GUEST separation
+* Active Directory Domain Services (AD DS)
+* DNS Services
+* DHCP Services
+* SOCLAB.LOCAL domain creation
+* Organizational Unit structure
+* Group Policy deployment
+* Domain-joined Windows endpoints
 
 Status:
 
@@ -43,23 +46,18 @@ Completed
 
 ---
 
-### Phase 3 — Firewall & Switching Migration
+### Phase 3 — Enterprise Network Segmentation
 
 Completed:
 
-### pfSense → FortiGate 60F
-
-- Firewall migration
-- Improved stability
-- Better routing visibility
-- Enterprise policy control
-
-### TP-Link → FortiSwitch 124E
-
-- Managed switching
-- VLAN trunking
-- SPAN integration
-- Improved monitoring
+* VLAN 10 — SOC_NET
+* VLAN 20 — USER_NET
+* VLAN 30 — SERVER_NET
+* VLAN 40 — MGMT_NET
+* VLAN 50 — DMZ_NET
+* VLAN 60 — HOME_NET
+* VLAN 70 — GUEST_NET
+* VLAN 80 — RED_TEAM
 
 Status:
 
@@ -69,23 +67,24 @@ Completed
 
 ---
 
-### Phase 4 — SIEM Deployment
+### Phase 4 — Enterprise Network Modernization
 
 Completed:
 
-### Splunk Enterprise
+#### pfSense → FortiGate 60F
 
-- Primary SIEM deployment
-- Dashboard creation
-- Log ingestion
-- Security monitoring
+* Firewall migration
+* Security policy redesign
+* Inter-VLAN routing
+* IPSec VPN deployment
+* Enterprise firewall administration
 
-### Wazuh XDR
+#### TP-Link → FortiSwitch 124E
 
-- Secondary SIEM deployment
-- Endpoint monitoring
-- Alert visibility
-- Correlation support
+* VLAN trunking
+* SPAN monitoring
+* Enterprise switching
+* Traffic visibility improvements
 
 Status:
 
@@ -95,17 +94,23 @@ Completed
 
 ---
 
-### Phase 5 — IDS Monitoring
+### Phase 5 — SIEM & XDR Deployment
 
 Completed:
 
-### Suricata IDS
+#### Splunk Enterprise
 
-- Physical sensor deployment
-- SPAN monitoring
-- EVE JSON telemetry
-- Splunk ingestion
-- Wazuh ingestion
+* Primary SIEM deployment
+* Log ingestion pipelines
+* Security dashboards
+* Search and investigation workflows
+
+#### Wazuh XDR
+
+* Endpoint monitoring
+* Alerting and correlation
+* Security visibility
+* Agent management
 
 Status:
 
@@ -115,18 +120,18 @@ Completed
 
 ---
 
-### Phase 6 — Endpoint Visibility
+### Phase 6 — Network Security Monitoring
 
 Completed:
 
-### Sysmon Deployment
+#### Physical Suricata Sensor
 
-- Windows telemetry
-- Process monitoring
-- PowerShell visibility
-- Network connections
-- Registry monitoring
-- Endpoint detection
+* Dedicated IDS sensor
+* SPAN monitoring
+* EVE JSON telemetry
+* Splunk integration
+* Wazuh integration
+* Enterprise network visibility
 
 Status:
 
@@ -136,16 +141,65 @@ Completed
 
 ---
 
-### Phase 7 — Attack Simulation Environment
+### Phase 7 — Endpoint Visibility
 
 Completed:
 
-### Vulnerable Applications
+#### Sysmon Deployment
 
-- DVWA deployment
-- OWASP Juice Shop deployment
-- DMZ integration
-- Web attack testing
+* Process creation monitoring
+* PowerShell visibility
+* Registry monitoring
+* Network connection monitoring
+* DNS visibility
+* Endpoint telemetry collection
+
+Status:
+
+```text
+Completed
+```
+
+---
+
+### Phase 8 — Cloud Integration
+
+Completed:
+
+#### AWS-HUB
+
+* AWS EC2 deployment
+* IPSec VPN connectivity
+* Splunk Universal Forwarder
+* Wazuh Agent
+* Hybrid monitoring architecture
+* Secure remote administration platform
+
+Status:
+
+```text
+Completed
+```
+
+---
+
+### Phase 9 — Attack Simulation Environment
+
+Completed:
+
+#### Attack Platforms
+
+* Kali Linux (RED_TEAM VLAN)
+* DVWA
+* OWASP Juice Shop
+
+#### Detection Engineering
+
+* SQL Injection Detection
+* Hydra Brute Force Detection
+* Custom Wazuh Rules
+* Custom Splunk Detections
+* MITRE ATT&CK Mapping
 
 Status:
 
@@ -157,14 +211,17 @@ Completed
 
 ## Current Focus
 
-Active priorities:
+### Portfolio Development
 
-- GitHub portfolio documentation
-- Detection engineering documentation
-- Dashboard documentation
-- SOC workflow documentation
-- Incident investigation writeups
-- Attack simulation documentation
+Current priorities:
+
+* GitHub documentation
+* Architecture documentation
+* Detection engineering documentation
+* Dashboard documentation
+* Incident investigation write-ups
+* Attack simulation reporting
+* Screenshot standardization
 
 Status:
 
@@ -174,64 +231,123 @@ In Progress
 
 ---
 
-## Upcoming Development
+### Incident Response Portfolio
 
-### Detection Engineering
+Current work:
 
-Planned:
+* Cydeo SOC investigations
+* Timeline reconstruction
+* IOC analysis
+* Root cause analysis
+* MITRE ATT&CK mapping
+* Professional case documentation
 
-- SQL Injection detections
-- Nmap detection
-- Brute-force detections
-- PowerShell detections
-- Authentication detections
+Status:
 
----
-
-### Incident Investigations
-
-Planned:
-
-- Cydeo SOC ticket investigations
-- Timeline reconstruction
-- IOC analysis
-- Root cause analysis
-- Case documentation
+```text
+In Progress
+```
 
 ---
 
-### Dashboard Improvements
+## Next Phase
+
+### Professional Portfolio Completion
 
 Planned:
 
-- MITRE ATT&CK mapping
-- Threat timelines
-- Attack correlation
-- SOC KPI visibility
-- Detection dashboards
+* Complete GitHub repository
+* Update architecture diagrams
+* Complete attack simulation documentation
+* Finalize incident investigations
+* Complete screenshot library
+
+Priority:
+
+```text
+High
+```
 
 ---
 
-### Remote Access
+### Career Preparation
 
 Planned:
 
-- Full WireGuard implementation
-- Secure external administration
-- AWS HUB optimization
+* LinkedIn optimization
+* Resume refinement
+* Interview preparation
+* SOC analyst interview labs
+* Threat analysis practice
+
+Priority:
+
+```text
+High
+```
 
 ---
 
-### Future Improvements
+## Planned Monitoring Enhancements
 
-Potential future enhancements:
+### Zeek Integration
 
-- Threat hunting workflows
-- Additional attack simulations
-- Detection tuning
-- Advanced SIEM correlation
-- Expanded dashboard visibility
-- Additional endpoint telemetry
+Planned:
+
+* Deploy Zeek on the physical Suricata sensor
+* Network metadata collection
+* Enhanced DNS visibility
+* HTTP protocol analysis
+* Threat hunting support
+
+Purpose:
+
+Provide deeper network visibility and investigation capabilities beyond IDS alerts.
+
+---
+
+### Vulnerability Management
+
+Planned:
+
+* Nessus Essentials deployment
+* Internal vulnerability assessments
+* Security baseline validation
+* Vulnerability reporting workflows
+
+Purpose:
+
+Introduce vulnerability management and security assessment capabilities.
+
+---
+
+### Network Forensics
+
+Planned:
+
+* Wireshark deployment on Mac Studio
+* Packet capture analysis
+* Protocol troubleshooting
+* Traffic validation
+
+Purpose:
+
+Provide packet-level visibility for investigations and network analysis.
+
+---
+
+### Endpoint Expansion
+
+Planned:
+
+* Additional Windows 11 workstation
+* Expanded Active Directory environment
+* Lateral movement simulation scenarios
+* Multi-endpoint detection testing
+
+Purpose:
+
+Improve enterprise realism and attack simulation capabilities.
 
 ---
 
@@ -239,12 +355,15 @@ Potential future enhancements:
 
 Build a realistic enterprise-style SOC environment capable of demonstrating:
 
-- Detection engineering
-- Incident response
-- SIEM operations
-- Threat monitoring
-- Windows security
-- IDS monitoring
-- Cloud-connected security workflows
+* Security Monitoring
+* Detection Engineering
+* Incident Response
+* SIEM Operations
+* Active Directory Administration
+* IDS Monitoring
+* Cloud Security Monitoring
+* Threat Hunting
+* Vulnerability Management
+* Hybrid Infrastructure Monitoring
 
-The environment is designed to support continuous learning, portfolio development, and preparation for SOC analyst roles.
+The project is designed to support continuous learning, portfolio development, and preparation for enterprise SOC Analyst and Cybersecurity Operations roles.
