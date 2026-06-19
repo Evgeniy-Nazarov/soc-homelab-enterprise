@@ -1,344 +1,375 @@
-# SOC Lab Evolution
+# SOC Lab Evolution Archive
 
-This document outlines the evolution of the SOC Homelab Enterprise environment, including major architectural decisions, infrastructure changes, troubleshooting lessons, migrations, and engineering improvements made throughout the development process.
+## Overview
 
-The purpose of this document is to demonstrate continuous improvement, infrastructure maturity, troubleshooting methodology, and enterprise-focused security engineering practices.
+This document chronicles the evolution of the SOC Homelab Enterprise environment from a learning-focused cybersecurity lab into a realistic enterprise-style Security Operations Center (SOC) platform.
+
+The project evolved through multiple infrastructure redesigns, platform migrations, monitoring improvements, troubleshooting efforts, and architectural decisions aimed at increasing operational maturity, security visibility, and enterprise relevance.
+
+The purpose of this archive is to document the engineering journey behind the environment and highlight the lessons learned throughout its development.
 
 ---
 
 # Phase 1 — Initial Lab Foundation
 
-The initial environment focused on learning core SOC concepts, virtualization, network visibility, and SIEM monitoring.
+The original environment was created to provide hands-on experience with security monitoring, virtualization, Active Directory, and attack simulation.
 
-Initial goals included:
+### Initial Objectives
 
-- Building a practical SOC environment
-- Learning SIEM workflows
-- Building detection visibility
-- Creating attack simulation capability
-- Improving cybersecurity skills
+* Learn SOC workflows
+* Gain practical cybersecurity experience
+* Build security visibility
+* Deploy monitoring platforms
+* Create an attack simulation environment
+* Improve incident investigation skills
 
-Early infrastructure included:
+### Initial Infrastructure
 
-- Hyper-V virtualization
-- Windows Server
-- Initial VLAN segmentation
-- pfSense firewall
-- TP-Link managed switch
-- Virtual Suricata IDS
-- QRadar testing
-- Wazuh deployment
+* Hyper-V Virtualization
+* Windows Server
+* Active Directory
+* Basic VLAN Segmentation
+* pfSense Firewall
+* TP-Link Managed Switch
+* Virtual Suricata IDS
+* Wazuh
+* QRadar Community Edition
+
+### Outcome
+
+The initial environment successfully provided a foundation for learning security operations and infrastructure administration.
 
 ---
 
-# Phase 2 — Early Network Architecture
+# Phase 2 — Enterprise Firewall Migration
 
-### Initial Firewall Platform
+As the environment expanded, limitations of the original firewall platform became more apparent.
 
-The environment initially used:
+### Original Platform
 
 ```text
 pfSense
 ```
 
-Goals:
+### Challenges
 
-- VLAN routing
-- Segmentation
-- Firewall visibility
-- Internet connectivity
+* Operational instability during extended uptime
+* Increased administrative complexity
+* Limited exposure to enterprise firewall workflows
+* Reduced alignment with enterprise environments
 
-Challenges encountered:
-
-- Network instability
-- Random connectivity interruptions
-- Reduced reliability during long uptime
-- Administrative complexity
-
-Engineering decision:
+### Engineering Decision
 
 ```text
-pfSense → FortiGate 60F
+pfSense
+      ↓
+FortiGate 60F
 ```
 
-Reason for migration:
+### Results
 
-- Better enterprise visibility
-- Greater stability
-- Enterprise firewall workflows
-- Improved routing reliability
-- Better long-term scalability
-
-Results:
-
-- Stable connectivity
-- Improved performance
-- Better segmentation
-- Enterprise administration experience
+* Improved stability
+* Enterprise firewall administration experience
+* Better VLAN management
+* Improved security policy visibility
+* More realistic SOC architecture
 
 ---
 
-# Phase 3 — Network Switching Evolution
+# Phase 3 — Enterprise Switching Migration
 
-### Initial Switching Platform
+To improve segmentation and monitoring capabilities, the switching infrastructure was upgraded.
 
-The environment originally used:
-
-```text
-TP-Link Smart Switch
-```
-
-Challenges:
-
-- Limited enterprise features
-- Limited SPAN visibility
-- Less flexible segmentation
-- Reduced monitoring capability
-
-Engineering decision:
+### Original Platform
 
 ```text
-TP-Link → FortiSwitch 124E
+TP-Link Managed Switch
 ```
 
-Reasons:
+### Engineering Decision
 
-- Enterprise switching
-- Better VLAN visibility
-- SPAN monitoring
-- Improved segmentation
-- Better IDS visibility
+```text
+TP-Link
+      ↓
+FortiSwitch 124E
+```
 
-Results:
+### Reasons
 
-- Stable VLAN architecture
-- Reliable port mirroring
-- Better IDS telemetry
-- Enterprise switching experience
+* Enterprise switching experience
+* Improved VLAN management
+* Better FortiGate integration
+* Reliable SPAN monitoring
+* Enhanced visibility
+
+### Results
+
+* Improved segmentation
+* Better operational consistency
+* Enterprise switching workflows
+* Enhanced monitoring architecture
 
 ---
 
 # Phase 4 — IDS Monitoring Evolution
 
-### Virtual IDS Phase
+One of the most significant improvements involved the network monitoring architecture.
 
-Suricata originally operated as:
-
-```text
-Virtual Machine IDS
-```
-
-Traffic monitoring relied on:
+### Original Design
 
 ```text
-Hyper-V mirror ports
+Virtual Suricata IDS
 ```
 
-Challenges:
+Traffic visibility relied primarily on Hyper-V virtual switching and mirrored traffic.
 
-- Inconsistent packet visibility
-- Mirroring limitations
-- Reduced monitoring reliability
-- Limited visibility across VLANs
+### Challenges
 
-Engineering decision:
+* Limited packet visibility
+* Reduced monitoring reliability
+* Inconsistent cross-VLAN visibility
+* Limited forensic capability
+
+### Engineering Decision
 
 ```text
-Virtual Suricata → Physical Suricata Sensor
+Virtual Suricata
+          ↓
+Physical Suricata Sensor
 ```
 
-Architecture:
+### Final Architecture
 
 ```text
-FortiGate Trunk + Hyper-V Trunk
-              ↓
-        SPAN / Mirror
-              ↓
-      Physical Suricata Sensor
+FortiSwitch SPAN Port
+            ↓
+Physical Suricata IDS
+            ↓
+Splunk Enterprise
+            ↓
+Wazuh XDR
 ```
 
-Reasons:
+### Results
 
-- Better packet visibility
-- Stable monitoring
-- Enterprise-style IDS design
-- VLAN traffic monitoring
-- Improved attack telemetry
-
-Results:
-
-- Reliable packet capture
-- SQL Injection visibility
-- JA3 / JA4 fingerprints
-- Better attack detection
-- DMZ traffic visibility
+* Full packet visibility
+* Reliable IDS monitoring
+* Improved attack telemetry
+* Better forensic visibility
+* Enterprise-style network security monitoring
 
 ---
 
 # Phase 5 — SIEM Evolution
 
-### QRadar Phase
+The monitoring stack evolved significantly throughout development.
 
-The environment initially included:
+### Initial Evaluation
 
 ```text
 QRadar Community Edition
 ```
 
-Challenges:
+### Challenges
 
-- High resource requirements
-- Increased complexity
-- Limited practicality for the lab
+* High resource consumption
+* Increased operational complexity
+* Limited practicality for a home lab environment
 
-Engineering decision:
+### Engineering Decision
 
 ```text
-QRadar → Splunk + Wazuh
+QRadar
+     ↓
+Splunk Enterprise + Wazuh XDR
 ```
 
-Reasons:
+### Results
 
-- Better flexibility
-- More practical learning
-- Dashboard customization
-- Better detection engineering
-- Enterprise market relevance
-
-Results:
-
-- Improved visibility
-- Better dashboards
-- Faster troubleshooting
-- Better SOC workflow simulation
+* Greater flexibility
+* Better dashboard customization
+* Improved troubleshooting workflows
+* Stronger detection engineering capabilities
+* Increased industry relevance
 
 ---
 
-# Phase 6 — Dashboard Evolution
+# Phase 6 — Detection Engineering Growth
 
-Early dashboards focused primarily on:
+The environment gradually evolved from basic log collection into a detection engineering platform.
 
-- Basic visibility
-- Raw telemetry
-- Log validation
+### Early Focus
 
-Later improvements included:
+* Log ingestion validation
+* Agent deployment
+* Telemetry verification
+* Basic monitoring
 
-- MITRE ATT&CK mapping
-- Kill chain stages
-- Threat severity
-- SQL Injection monitoring
-- Attack paths
-- AWS administration visibility
-- Timeline reconstruction
-- Threat prioritization
+### Expanded Capabilities
 
-Results:
+* SQL Injection detection
+* Alert validation
+* Detection tuning
+* MITRE ATT&CK mapping
+* Telemetry analysis
+* Cross-platform correlation
+* Investigation workflows
 
-- Better SOC visibility
-- Realistic monitoring workflows
-- Portfolio-quality dashboards
+### Results
+
+* Improved detection quality
+* Better alert fidelity
+* Practical SOC experience
+* Investigation readiness
 
 ---
 
-# Phase 7 — Cloud Integration
+# Phase 7 — Cloud Connectivity Evolution
 
-Cloud connectivity was added through:
+Cloud integration was introduced to support hybrid monitoring and remote administration.
+
+### Initial Connectivity
 
 ```text
-AWS HUB
+WireGuard
 ```
 
-Purpose:
+WireGuard was originally used for cloud connectivity and remote administration.
 
-- Secure remote administration
-- VPN connectivity
-- WireGuard access
-- IPsec connectivity
-- External SOC visibility
+### Evolution
 
-Architecture:
+As the environment matured, FortiGate-based site-to-site VPN connectivity became the preferred solution.
+
+### Current Architecture
 
 ```text
-MacBook Pro
-      ↓
-WireGuard VPN
-      ↓
-AWS HUB
-      ↓
-IPsec Tunnel
-      ↓
-FortiGate
-      ↓
+AWS EC2
+        ↓
+Site-to-Site IPsec VPN
+        ↓
+FortiGate 60F
+        ↓
 SOC Environment
 ```
 
-Results:
+### Results
 
-- Secure remote access
-- Cloud-connected SOC workflows
-- Enterprise-style administration
+* Secure cloud connectivity
+* Centralized monitoring
+* Hybrid SOC architecture
+* Cross-environment visibility
 
 ---
 
-# Phase 8 — Current Environment
+# Phase 8 — Network Segmentation Expansion
 
-Current architecture includes:
+The original network design evolved into a fully segmented enterprise-style architecture.
+
+### Initial Segmentation
+
+* User Network
+* Server Network
+* Monitoring Network
+
+### Current Security Zones
+
+| Zone       | Purpose                                      |
+| ---------- | -------------------------------------------- |
+| SOC_NET    | Security Monitoring Infrastructure           |
+| USER_NET   | Corporate Endpoints                          |
+| SERVER_NET | Active Directory and Infrastructure Services |
+| MGMT_NET   | Administrative Management Network            |
+| DMZ_NET    | Vulnerable Applications                      |
+| HOME_NET   | Trusted Personal Devices                     |
+| GUEST_WIFI | Internet-Only Wireless Access                |
+| RED_TEAM   | Attack Simulation Environment                |
+
+### Results
+
+* Reduced attack surface
+* Better access control
+* Improved monitoring visibility
+* More realistic enterprise architecture
+
+---
+
+# Phase 9 — Enterprise Security Architecture
+
+The environment ultimately evolved into a fully integrated security operations platform.
 
 ### Security Infrastructure
 
-- Splunk Enterprise
-- Wazuh XDR
-- Suricata IDS (Physical Sensor)
-- FortiGate 60F
-- FortiSwitch 124E
+* FortiGate 60F
+* FortiSwitch 124E
+* Physical Suricata IDS Sensor
+* Splunk Enterprise
+* Wazuh XDR
 
-### Endpoint Infrastructure
+### Identity Infrastructure
 
-- Windows 11
-- Sysmon
-- Active Directory
-- Windows Server 2022
+* Windows Server 2022
+* Active Directory
+* DNS
+* DHCP
+* Group Policy
+* Sysmon
 
-### Attack Simulation
+### Attack Simulation Infrastructure
 
-- Kali Linux
-- DVWA
-- OWASP Juice Shop
+* Kali Linux
+* OWASP Juice Shop
+* DVWA
 
-### Cloud & Remote Access
+### Cloud Infrastructure
 
-- AWS HUB
-- WireGuard
-- IPsec VPN
+* AWS EC2
+* Site-to-Site IPsec VPN
+
+### Monitoring Architecture
+
+```text
+Endpoints
+Servers
+Active Directory
+AWS
+FortiGate
+Suricata
+        ↓
+Splunk Enterprise
+        +
+Wazuh XDR
+```
 
 ---
 
-# Major Lessons Learned
+# Major Engineering Lessons Learned
 
-Key engineering lessons:
+Key lessons learned throughout development include:
 
-- Stability matters more than complexity
-- Physical IDS visibility improved detection quality
-- Enterprise segmentation improves realism
-- Detection engineering requires tuning
-- Dashboards evolve through iteration
-- Documentation improves learning
-- Troubleshooting drives architecture maturity
+* Stability is more valuable than unnecessary complexity.
+* Enterprise technologies provide more realistic operational experience.
+* Physical IDS monitoring significantly improves network visibility.
+* Effective segmentation reduces risk and improves monitoring quality.
+* Detection engineering requires continuous validation and tuning.
+* Documentation improves consistency and troubleshooting efficiency.
+* Security monitoring platforms are only as effective as the telemetry they receive.
+* Continuous improvement is a core component of security operations.
 
 ---
 
 # Final Outcome
 
-The environment evolved from a learning-focused cybersecurity lab into a realistic enterprise-style SOC architecture capable of supporting:
+The environment evolved from a learning-focused cybersecurity lab into a realistic enterprise-style SOC platform capable of supporting:
 
-- SIEM Engineering
-- Detection Engineering
-- Threat Monitoring
-- IDS Visibility
-- Incident Investigations
-- Attack Simulation
-- Cloud-connected Administration
-- SOC Analyst Development
+* SIEM Engineering
+* Detection Engineering
+* Network Security Monitoring
+* Incident Investigation
+* Threat Monitoring
+* Active Directory Security
+* Firewall Engineering
+* Cloud Security Integration
+* Security Operations Workflows
+* SOC Analyst Skill Development
 
-The lab continues to evolve through new detections, dashboards, investigations, attack simulations, and enterprise security engineering improvements.
+The project continues to evolve through new detections, investigations, attack simulations, monitoring enhancements, and enterprise security engineering improvements.
