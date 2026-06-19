@@ -7,22 +7,30 @@
 ![Firewall](https://img.shields.io/badge/Firewall-FortiGate-red)
 ![Cloud](https://img.shields.io/badge/Cloud-AWS-orange)
 
-> **Enterprise-style SOC homelab focused on Detection Engineering, SIEM Engineering, Incident Response, and Blue-Team Security Monitoring.**
-
-Enterprise-style SOC homelab built to simulate real-world Security Operations Center (SOC) workflows, detection engineering, SIEM monitoring, incident investigations, Active Directory security, network segmentation, and cloud-connected remote access.
-
-This lab focuses on practical blue-team experience, detection engineering, SOC workflows, and enterprise security visibility.
+> Enterprise-style Security Operations Center (SOC) environment focused on SIEM Engineering, Detection Engineering, Incident Investigation, Network Security Monitoring, Firewall Engineering, and Blue-Team Operations.
 
 ---
 
-## Key Objectives
+## Project Overview
 
-- Build enterprise-style SOC architecture
-- Build real-world SOC analyst experience
-- Develop practical SOC analyst skills
-- Practice detection engineering
-- Simulate real-world incident response
-- Improve SIEM engineering skills
+SOC Homelab Enterprise is a continuously evolving security environment built to simulate real-world enterprise Security Operations Center workflows.
+
+The project combines security monitoring, detection engineering, Active Directory administration, network segmentation, firewall administration, cloud integration, incident investigation, and attack simulation into a single operational security platform.
+
+The environment is designed to demonstrate practical SOC Analyst capabilities through hands-on implementation, monitoring, troubleshooting, validation, documentation, and continuous improvement.
+
+The lab emphasizes:
+
+* Security Monitoring
+* SIEM Operations
+* Detection Engineering
+* Incident Investigation
+* Network Security Monitoring
+* Firewall Administration
+* Active Directory Security
+* Cloud Security Integration
+* Attack Simulation Validation
+* SOC Documentation
 
 ---
 
@@ -38,154 +46,261 @@ This lab focuses on practical blue-team experience, detection engineering, SOC w
 
 ## Core Security Stack
 
-| Category | Technology |
-|-----------|-------------|
-| SIEM | Splunk Enterprise (Primary SIEM) + Wazuh XDR (Secondary SIEM) |
-| IDS | Suricata IDS |
-| Firewall | FortiGate 60F |
-| Switch | FortiSwitch 124E |
-| Endpoint Telemetry | Sysmon |
-| Identity | Active Directory |
-| Cloud | AWS HUB |
-| Remote Access | WireGuard + IPsec VPN |
-| Virtualization | Hyper-V |
+| Category                  | Technology                    |
+| ------------------------- | ----------------------------- |
+| SIEM / Security Analytics | Splunk Enterprise + Wazuh XDR |
+| Network IDS               | Physical Suricata IDS Sensor  |
+| Firewall                  | FortiGate 60F                 |
+| Switching                 | FortiSwitch 124E              |
+| Endpoint Telemetry        | Sysmon                        |
+| Identity                  | Active Directory              |
+| Cloud                     | AWS EC2 / AWS HUB             |
+| VPN / Cloud Connectivity  | AWS Site-to-Site IPsec VPN    |
+| Virtualization            | Hyper-V                       |
+
+---
+
+## Security Architecture Highlights
+
+### Network Segmentation
+
+The environment is segmented into dedicated security zones:
+
+| Zone       | Purpose                                                   |
+| ---------- | --------------------------------------------------------- |
+| SOC_NET    | Splunk, Wazuh, and security monitoring infrastructure     |
+| USER_NET   | Windows user endpoints                                    |
+| SERVER_NET | Active Directory and infrastructure services              |
+| MGMT_NET   | Administrative management systems                         |
+| DMZ_NET    | Vulnerable web applications and attack simulation targets |
+| HOME_NET   | Trusted personal devices                                  |
+| GUEST_WIFI | Internet-only guest wireless access                       |
+| RED_TEAM   | Offensive security and attack simulation systems          |
+
+### Security Monitoring Infrastructure
+
+The SOC monitoring stack includes:
+
+* Splunk Enterprise
+* Wazuh XDR
+* Physical Suricata IDS Sensor
+* Sysmon
+* Active Directory Monitoring
+* FortiGate Firewall Logging
+* AWS Telemetry
+
+### Network Detection Architecture
+
+A physical Suricata IDS sensor receives mirrored traffic through a FortiSwitch SPAN port.
+
+```text
+FortiSwitch SPAN Port
+        ↓
+Physical Suricata IDS Sensor
+        ↓
+Splunk Enterprise + Wazuh XDR
+```
+
+### Cloud Integration
+
+The lab includes hybrid cloud connectivity through AWS and FortiGate IPsec VPN.
+
+* AWS EC2 / AWS HUB
+* Site-to-Site IPsec VPN
+* Hybrid SOC Connectivity
+* Remote Log Collection
+* Cross-Network Visibility
 
 ---
 
 ## Current Lab Status
 
-| Component | Status |
-|------------|--------|
-| Splunk Enterprise | ✅ Operational |
-| Wazuh XDR | ✅ Operational |
-| Suricata IDS | ✅ SPAN Monitoring Active |
-| FortiGate VLAN Segmentation | ✅ Operational |
-| Sysmon Telemetry | ✅ Active |
-| AWS HUB | ✅ Connected |
-| WireGuard Remote Access | 🚧 Planned|
-| GitHub Documentation | 🚧 Active Development |
+| Component                   | Status               |
+| --------------------------- | -------------------- |
+| Splunk Enterprise           | ✅ Operational        |
+| Wazuh XDR                   | ✅ Operational        |
+| Physical Suricata IDS       | ✅ Operational        |
+| FortiGate 60F               | ✅ Operational        |
+| FortiSwitch 124E            | ✅ Operational        |
+| Active Directory            | ✅ Operational        |
+| Sysmon Telemetry            | ✅ Operational        |
+| AWS Site-to-Site IPsec VPN  | ✅ Operational        |
+| FortiSwitch SPAN Monitoring | ✅ Operational        |
+| DMZ Attack Targets          | ✅ Operational        |
+| GUEST_WIFI Isolation        | ✅ Implemented        |
+| RED_TEAM Network            | ✅ Implemented        |
+| GitHub Documentation        | ✅ Active Development |
 
 ---
 
-## Project Overview
+## Practical Security Experience
 
-This project demonstrates the design, implementation, and continuous improvement of an enterprise-style SOC homelab environment.
+This project demonstrates hands-on experience with:
 
-This environment is continuously expanded to strengthen practical SOC analyst skills, detection engineering capabilities, and enterprise security visibility.
-
-The lab was built to simulate real-world blue-team operations including:
-
-- Security monitoring
-- Detection engineering
-- SIEM engineering
-- Incident response
-- Threat hunting
-- Network segmentation
-- IDS monitoring
-- Windows security telemetry
-- Cloud-connected secure access
-
-Core technologies include:
-
-- **Splunk Enterprise**
-- **Wazuh XDR / SIEM**
-- **Suricata IDS**
-- **FortiGate 60F**
-- **FortiSwitch 124E**
-- **Sysmon**
-- **Windows Server 2022**
-- **Active Directory**
-- **AWS HUB**
-- **WireGuard VPN**
-- **IPsec VPN**
-- **Hyper-V**
+* SIEM Engineering
+* Detection Engineering
+* Incident Investigation
+* Security Monitoring
+* Network Security
+* Active Directory Security
+* Firewall Administration
+* FortiSwitch Administration
+* Cloud Security Integration
+* IDS Monitoring
+* Threat Detection
+* Attack Simulation
+* Security Documentation
+* Security Operations Workflows
 
 ---
 
-## Detection Engineering
+## Attack Simulations
 
-This repository includes practical detection engineering scenarios:
+Current attack simulation scenarios include:
 
-- SQL Injection Detection
-- Custom Splunk Detections
-- Suricata IDS Monitoring
-- Wazuh Correlation
-- Alert Validation
-- Attack Telemetry Analysis
-- MITRE ATT&CK Mapping
+* SQL Injection Detection
+* Web Application Attack Monitoring
+* Hydra Brute Force Detection
+* Reconnaissance Activity
+* Detection Validation Exercises
+* IDS Visibility Testing
+* Security Telemetry Validation
 
----
+Target systems include:
 
-## Incident Investigations
-
-Security investigations and ticket-based incident response exercises including:
-
-- Timeline reconstruction
-- Evidence collection
-- IOC analysis
-- Threat investigation
-- Root cause analysis
-- SOC ticket workflow
+* OWASP Juice Shop
+* DVWA
+* Kali Linux Attack Platform
 
 ---
 
-## Dashboards & Visibility
+## Security Monitoring Capabilities
 
-Examples include:
+The monitoring architecture collects telemetry from:
 
-- Security KPI Dashboards
-- MITRE ATT&CK Mapping
-- SQL Injection Monitoring
-- Threat Timelines
-- Attack Correlation
-- Log Source Visibility
+* Windows Endpoints
+* Windows Servers
+* Active Directory
+* Sysmon
+* Suricata IDS
+* FortiGate Firewall
+* AWS Infrastructure
+* Security Applications
+* Attack Simulation Targets
+
+Monitoring data is centralized within:
+
+* Splunk Enterprise
+* Wazuh XDR
 
 ---
 
 ## Skills Demonstrated
 
-- SIEM Engineering
-- Detection Engineering
-- Threat Detection
-- SOC Operations
-- Network Security
-- IDS Monitoring
-- Active Directory Security
-- Sysmon Telemetry
-- Incident Investigation
-- Security Monitoring
-- VPN & Secure Remote Access
-- Cloud Security Integration
+### Security Operations
+
+* Alert Triage
+* Event Correlation
+* Incident Investigation
+* Threat Analysis
+* Security Monitoring
+* Timeline Reconstruction
+* IOC Analysis
+
+### Detection Engineering
+
+* Custom Detection Development
+* Detection Validation
+* Alert Tuning
+* MITRE ATT&CK Mapping
+* IDS Telemetry Analysis
+* SIEM Correlation
+
+### Network Security
+
+* FortiGate Administration
+* FortiSwitch Administration
+* VLAN Segmentation
+* Least Privilege Firewall Policies
+* SPAN Port Monitoring
+* Physical IDS Architecture
+* IPsec VPN Administration
+* Guest Wi-Fi Isolation
+* Red Team Network Segmentation
+
+### Active Directory Security
+
+* Group Policy Administration
+* Authentication Monitoring
+* Privileged Activity Monitoring
+* Security Event Analysis
+* Domain Controller Monitoring
+* Sysmon Integration
+
+### Cloud Security
+
+* AWS Integration
+* Hybrid Security Monitoring
+* Site-to-Site IPsec VPN Connectivity
+* Cloud-Connected SOC Architecture
 
 ---
 
 ## Repository Structure
 
-See documentation folders for:
+| Section                    | Description                                                              |
+| -------------------------- | ------------------------------------------------------------------------ |
+| 01-Architecture            | Network topology and enterprise SOC architecture                         |
+| 02-Infrastructure          | Hardware, virtualization, and lab infrastructure                         |
+| 03-Network                 | VLANs, routing, segmentation, and network design                         |
+| 04-FortiGate-Security      | FortiGate firewall policies, segmentation, VPN, and FortiSwitch evidence |
+| 05-Attack-Simulations      | Attack scenarios, detection validation, and telemetry analysis           |
+| 06-Incident-Investigations | SOC investigation writeups and case studies                              |
+| 07-Dashboards              | Splunk/Wazuh dashboards and security visibility                          |
+| 08-Log-Pipeline            | Log forwarding, ingestion, and telemetry flow                            |
+| 09-Cloud-Integration       | AWS connectivity and hybrid SOC integration                              |
+| 10-Active-Directory        | AD, DNS, GPO, domain security, and identity monitoring                   |
+| 11-Lessons-Learned         | Operational lessons and engineering takeaways                            |
+| 12-Certifications          | Security certifications and training evidence                            |
+| 13-Portfolio-Evidence      | Practical SOC, detection engineering, and security operations evidence   |
+| 14-Roadmap                 | Planned improvements and future project direction                        |
+| 99-Archive                 | Historical architecture evolution and previous lab designs               |
 
-- Architecture
-- Infrastructure
-- Detection Engineering
-- Attack Simulations
-- Incident Investigations
-- Dashboards
-- Lessons Learned
-- Cloud Integration
-- Active Directory
+---
+
+## Certifications & Training
+
+* CompTIA Security+
+* Cydeo SOC Analyst Program
+* RangeForce SOC / Cybersecurity Training
 
 ---
 
 ## Roadmap
 
-The lab continues to evolve with:
+The project continues to evolve through:
 
-- Detection improvements
-- Additional incident investigations
-- Dashboard enhancements
-- Threat hunting workflows
-- Detection tuning
-- Documentation improvements
+* Additional Attack Simulations
+* Incident Investigation Scenarios
+* Detection Improvements
+* Dashboard Enhancements
+* Threat Hunting Workflows
+* Detection Tuning
+* Security Documentation Enhancements
+* Interview Preparation Use Cases
 
 ---
 
-**Built for continuous learning, detection engineering, SOC analyst development, and cybersecurity portfolio demonstration.**
+## Portfolio Goal
+
+This repository was built to demonstrate practical, hands-on experience with enterprise-style SOC operations, security monitoring, network defense, SIEM administration, detection engineering, firewall administration, cloud integration, and incident investigation.
+
+The project serves as a professional portfolio showcasing the technical skills, operational workflows, troubleshooting methodology, and security mindset expected of a SOC Analyst working in a modern enterprise environment.
+
+---
+
+## Summary
+
+SOC Homelab Enterprise combines FortiGate network security, FortiSwitch switching, Splunk and Wazuh monitoring, Physical Suricata IDS, Active Directory, Sysmon, AWS IPsec integration, DMZ attack targets, guest network isolation, and red team segmentation into a single practical blue-team security environment.
+
+**Built to demonstrate practical enterprise security operations, blue-team workflows, detection engineering, and SOC Analyst capabilities.**
