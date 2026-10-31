@@ -28,6 +28,8 @@ The goal of the exercise was to validate:
 | SIEM | Splunk Enterprise + Wazuh |
 | Network Visibility | FortiSwitch SPAN / Mirror Port |
 
+> **Note:** At the time of this simulation, KALI-01 was in USER_NET (192.168.20.20). It has since moved to the dedicated RED_TEAM VLAN (192.168.80.10), where internet access is disabled by default.
+
 ---
 
 ## Attack Scenario
